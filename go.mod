@@ -1,4 +1,4 @@
-module leaf
+module github.com/liuzhenger/leaf
 
 go 1.12
 
