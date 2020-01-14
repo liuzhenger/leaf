@@ -31,6 +31,10 @@ type Logger struct {
 	baseFile   *os.File
 }
 
+// New 创建日志
+// strLevel	日志等级
+// pathname 日志文件所在目录，如果为空字符串，则将日志打印到控制台
+// flag 日志前缀，参见标准库日志配置
 func New(strLevel string, pathname string, flag int) (*Logger, error) {
 	// level
 	var level int

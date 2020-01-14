@@ -8,44 +8,44 @@ import (
 	"runtime"
 )
 
-// one server per goroutine (goroutine not safe)
-// one client per goroutine (goroutine not safe)
+// server 线程不安全
+// client 线程不安全
 type Server struct {
 	// id -> function
 	//
-	// function:
+	// 方法支持以下三种形式
 	// func(args []interface{})
 	// func(args []interface{}) interface{}
 	// func(args []interface{}) []interface{}
 	functions map[interface{}]interface{}
-	ChanCall  chan *CallInfo
+	// 待处理消息队列
+	ChanCall chan *CallInfo
 }
 
 type CallInfo struct {
-	f       interface{}
-	args    []interface{}
-	chanRet chan *RetInfo
-	cb      interface{}
+	f       interface{}   // 处理方法
+	args    []interface{} // 参数
+	chanRet chan *RetInfo // 接收结果 f(args)
+	cb      interface{}   // 回调方法
 }
 
 type RetInfo struct {
 	// nil
 	// interface{}
 	// []interface{}
-	ret interface{}
-	err error
-	// callback:
+	ret interface{} // 处理方法的结果
+	err error       // 错误
 	// func(err error)
 	// func(ret interface{}, err error)
 	// func(ret []interface{}, err error)
-	cb interface{}
+	cb interface{} // 回调方法
 }
 
 type Client struct {
-	s               *Server
-	chanSyncRet     chan *RetInfo
-	ChanAsynRet     chan *RetInfo
-	pendingAsynCall int
+	s                *Server
+	chanSyncRet      chan *RetInfo // 同步消息队列
+	ChanAsyncRet     chan *RetInfo // 异步消息队列
+	pendingAsyncCall int           // 处理中的异步消息数量
 }
 
 func NewServer(l int) *Server {
@@ -112,16 +112,14 @@ func (s *Server) exec(ci *CallInfo) (err error) {
 	}()
 
 	// execute
-	switch ci.f.(type) {
+	switch f := ci.f.(type) {
 	case func([]interface{}):
-		ci.f.(func([]interface{}))(ci.args)
+		f(ci.args)
 		return s.ret(ci, &RetInfo{})
 	case func([]interface{}) interface{}:
-		ret := ci.f.(func([]interface{}) interface{})(ci.args)
-		return s.ret(ci, &RetInfo{ret: ret})
+		return s.ret(ci, &RetInfo{ret: f(ci.args)})
 	case func([]interface{}) []interface{}:
-		ret := ci.f.(func([]interface{}) []interface{})(ci.args)
-		return s.ret(ci, &RetInfo{ret: ret})
+		return s.ret(ci, &RetInfo{ret: f(ci.args)})
 	}
 
 	panic("bug")
@@ -183,13 +181,15 @@ func (s *Server) Open(l int) *Client {
 	return c
 }
 
+// RPC客户端
 func NewClient(l int) *Client {
 	c := new(Client)
 	c.chanSyncRet = make(chan *RetInfo, 1)
-	c.ChanAsynRet = make(chan *RetInfo, l)
+	c.ChanAsyncRet = make(chan *RetInfo, l)
 	return c
 }
 
+// 绑定RPC服务端
 func (c *Client) Attach(s *Server) {
 	c.s = s
 }
@@ -242,6 +242,8 @@ func (c *Client) f(id interface{}, n int) (f interface{}, err error) {
 	}
 	return
 }
+
+// Call0,Call1,CallN 三种同步调用方法
 
 func (c *Client) Call0(id interface{}, args ...interface{}) error {
 	f, err := c.f(id, 0)
@@ -300,26 +302,27 @@ func (c *Client) CallN(id interface{}, args ...interface{}) ([]interface{}, erro
 	return assert(ri.ret), ri.err
 }
 
-func (c *Client) asynCall(id interface{}, args []interface{}, cb interface{}, n int) {
+func (c *Client) asyncCall(id interface{}, args []interface{}, cb interface{}, n int) {
 	f, err := c.f(id, n)
 	if err != nil {
-		c.ChanAsynRet <- &RetInfo{err: err, cb: cb}
+		c.ChanAsyncRet <- &RetInfo{err: err, cb: cb}
 		return
 	}
 
 	err = c.call(&CallInfo{
 		f:       f,
 		args:    args,
-		chanRet: c.ChanAsynRet,
+		chanRet: c.ChanAsyncRet,
 		cb:      cb,
 	}, false)
 	if err != nil {
-		c.ChanAsynRet <- &RetInfo{err: err, cb: cb}
+		c.ChanAsyncRet <- &RetInfo{err: err, cb: cb}
 		return
 	}
 }
 
-func (c *Client) AsynCall(id interface{}, _args ...interface{}) {
+// 异步调用方法
+func (c *Client) AsyncCall(id interface{}, _args ...interface{}) {
 	if len(_args) < 1 {
 		panic("callback function not found")
 	}
@@ -340,13 +343,13 @@ func (c *Client) AsynCall(id interface{}, _args ...interface{}) {
 	}
 
 	// too many calls
-	if c.pendingAsynCall >= cap(c.ChanAsynRet) {
+	if c.pendingAsyncCall >= cap(c.ChanAsyncRet) {
 		execCb(&RetInfo{err: errors.New("too many calls"), cb: cb})
 		return
 	}
 
-	c.asynCall(id, args, cb, n)
-	c.pendingAsynCall++
+	c.asyncCall(id, args, cb, n)
+	c.pendingAsyncCall++
 }
 
 func execCb(ri *RetInfo) {
@@ -363,30 +366,31 @@ func execCb(ri *RetInfo) {
 	}()
 
 	// execute
-	switch ri.cb.(type) {
+	switch cb := ri.cb.(type) {
 	case func(error):
-		ri.cb.(func(error))(ri.err)
+		cb(ri.err)
 	case func(interface{}, error):
-		ri.cb.(func(interface{}, error))(ri.ret, ri.err)
+		cb(ri.ret, ri.err)
 	case func([]interface{}, error):
-		ri.cb.(func([]interface{}, error))(assert(ri.ret), ri.err)
+		cb(assert(ri.ret), ri.err)
 	default:
 		panic("bug")
 	}
 	return
 }
 
+// 执行回调方法
 func (c *Client) Cb(ri *RetInfo) {
-	c.pendingAsynCall--
+	c.pendingAsyncCall--
 	execCb(ri)
 }
 
 func (c *Client) Close() {
-	for c.pendingAsynCall > 0 {
-		c.Cb(<-c.ChanAsynRet)
+	for c.pendingAsyncCall > 0 {
+		c.Cb(<-c.ChanAsyncRet)
 	}
 }
 
 func (c *Client) Idle() bool {
-	return c.pendingAsynCall == 0
+	return c.pendingAsyncCall == 0
 }

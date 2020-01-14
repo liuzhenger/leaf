@@ -11,7 +11,7 @@ import (
 type Skeleton struct {
 	GoLen              int
 	TimerDispatcherLen int
-	AsynCallLen        int
+	AsyncCallLen       int
 	ChanRPCServer      *chanrpc.Server
 	g                  *g.Go
 	dispatcher         *timer.Dispatcher
@@ -27,13 +27,13 @@ func (s *Skeleton) Init() {
 	if s.TimerDispatcherLen <= 0 {
 		s.TimerDispatcherLen = 0
 	}
-	if s.AsynCallLen <= 0 {
-		s.AsynCallLen = 0
+	if s.AsyncCallLen <= 0 {
+		s.AsyncCallLen = 0
 	}
 
 	s.g = g.New(s.GoLen)
 	s.dispatcher = timer.NewDispatcher(s.TimerDispatcherLen)
-	s.client = chanrpc.NewClient(s.AsynCallLen)
+	s.client = chanrpc.NewClient(s.AsyncCallLen)
 	s.server = s.ChanRPCServer
 
 	if s.server == nil {
@@ -53,7 +53,7 @@ func (s *Skeleton) Run(closeSig chan bool) {
 				s.client.Close()
 			}
 			return
-		case ri := <-s.client.ChanAsynRet:
+		case ri := <-s.client.ChanAsyncRet:
 			s.client.Cb(ri)
 		case ci := <-s.server.ChanCall:
 			s.server.Exec(ci)
@@ -99,13 +99,13 @@ func (s *Skeleton) NewLinearContext() *g.LinearContext {
 	return s.g.NewLinearContext()
 }
 
-func (s *Skeleton) AsynCall(server *chanrpc.Server, id interface{}, args ...interface{}) {
-	if s.AsynCallLen == 0 {
-		panic("invalid AsynCallLen")
+func (s *Skeleton) AsyncCall(server *chanrpc.Server, id interface{}, args ...interface{}) {
+	if s.AsyncCallLen == 0 {
+		panic("invalid AsyncCallLen")
 	}
 
 	s.client.Attach(server)
-	s.client.AsynCall(id, args...)
+	s.client.AsyncCall(id, args...)
 }
 
 func (s *Skeleton) RegisterChanRPC(id interface{}, f interface{}) {

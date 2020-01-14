@@ -15,7 +15,7 @@ func Example() {
 	// goroutine 1
 	go func() {
 		s.Register("f0", func(args []interface{}) {
-
+			fmt.Println(0)
 		})
 
 		s.Register("f1", func(args []interface{}) interface{} {
@@ -73,14 +73,14 @@ func Example() {
 			fmt.Println(ra)
 		}
 
-		// asyn
-		c.AsynCall("f0", func(err error) {
+		// async
+		c.AsyncCall("f0", func(err error) {
 			if err != nil {
 				fmt.Println(err)
 			}
 		})
 
-		c.AsynCall("f1", func(ret interface{}, err error) {
+		c.AsyncCall("f1", func(ret interface{}, err error) {
 			if err != nil {
 				fmt.Println(err)
 			} else {
@@ -88,7 +88,7 @@ func Example() {
 			}
 		})
 
-		c.AsynCall("fn", func(ret []interface{}, err error) {
+		c.AsyncCall("fn", func(ret []interface{}, err error) {
 			if err != nil {
 				fmt.Println(err)
 			} else {
@@ -96,7 +96,7 @@ func Example() {
 			}
 		})
 
-		c.AsynCall("add", 1, 2, func(ret interface{}, err error) {
+		c.AsyncCall("add", 1, 2, func(ret interface{}, err error) {
 			if err != nil {
 				fmt.Println(err)
 			} else {
@@ -104,10 +104,10 @@ func Example() {
 			}
 		})
 
-		c.Cb(<-c.ChanAsynRet)
-		c.Cb(<-c.ChanAsynRet)
-		c.Cb(<-c.ChanAsynRet)
-		c.Cb(<-c.ChanAsynRet)
+		c.Cb(<-c.ChanAsyncRet)
+		c.Cb(<-c.ChanAsyncRet)
+		c.Cb(<-c.ChanAsyncRet)
+		c.Cb(<-c.ChanAsyncRet)
 
 		// go
 		s.Go("f0")
@@ -118,10 +118,13 @@ func Example() {
 	wg.Wait()
 
 	// Output:
+	// 0
 	// 1
 	// 1 2 3
 	// 3
+	// 0
 	// 1
 	// 1 2 3
 	// 3
+	// 0
 }
