@@ -1,8 +1,8 @@
 package module
 
 import (
-	"leaf/conf"
-	"leaf/log"
+	"github.com/liuzhenger/leaf/conf"
+	"github.com/liuzhenger/leaf/log"
 	"runtime"
 	"sync"
 )

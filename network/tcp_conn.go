@@ -1,7 +1,7 @@
 package network
 
 import (
-	"leaf/log"
+	"github.com/liuzhenger/leaf/log"
 	"net"
 	"sync"
 )

@@ -2,8 +2,8 @@ package console
 
 import (
 	"bufio"
-	"leaf/conf"
-	"leaf/network"
+	"github.com/liuzhenger/leaf/conf"
+	"github.com/liuzhenger/leaf/network"
 	"math"
 	"strconv"
 	"strings"

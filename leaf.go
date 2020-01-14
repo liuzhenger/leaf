@@ -1,11 +1,11 @@
 package leaf
 
 import (
-	"leaf/cluster"
-	"leaf/conf"
-	"leaf/console"
-	"leaf/log"
-	"leaf/module"
+	"github.com/liuzhenger/leaf/cluster"
+	"github.com/liuzhenger/leaf/conf"
+	"github.com/liuzhenger/leaf/console"
+	"github.com/liuzhenger/leaf/log"
+	"github.com/liuzhenger/leaf/module"
 	"os"
 	"os/signal"
 )

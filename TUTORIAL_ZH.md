@@ -100,7 +100,7 @@ go install server
 package msg
 
 import (
-	"leaf/network"
+	"github.com/liuzhenger/leaf/network"
 )
 
 var Processor network.Processor
@@ -116,7 +116,7 @@ Processor 为消息的处理器（可由用户自定义），这里我们使用 
 package msg
 
 import (
-	"leaf/network/json"
+	"github.com/liuzhenger/leaf/network/json"
 )
 
 // 使用默认的 JSON 消息处理器（默认还提供了 protobuf 消息处理器）
@@ -157,8 +157,8 @@ func init() {
 package internal
 
 import (
-	"leaf/log"
-	"leaf/gate"
+	"github.com/liuzhenger/leaf/log"
+	"github.com/liuzhenger/leaf/gate"
 	"reflect"
 	"server/msg"
 )
@@ -319,7 +319,7 @@ var (
 package internal
 
 import (
-	"leaf/module"
+	"github.com/liuzhenger/leaf/module"
 	"server/base"
 )
 
@@ -355,7 +355,7 @@ func (m *Module) OnDestroy() {
 package internal
 
 import (
-	"leaf/gate"
+	"github.com/liuzhenger/leaf/gate"
 )
 
 func init() {
