@@ -2,11 +2,12 @@ package console
 
 import (
 	"bufio"
-	"github.com/liuzhenger/leaf/conf"
-	"github.com/liuzhenger/leaf/network"
 	"math"
 	"strconv"
 	"strings"
+
+	"github.com/liuzhenger/leaf/conf"
+	"github.com/liuzhenger/leaf/network"
 )
 
 var server *network.TCPServer

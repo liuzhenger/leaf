@@ -47,6 +47,7 @@ func (p *Processor) SetByteOrder(littleEndian bool) {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
+// 注册消息类型信息
 func (p *Processor) Register(msg proto.Message) uint16 {
 	msgType := reflect.TypeOf(msg)
 	if msgType == nil || msgType.Kind() != reflect.Ptr {
@@ -68,6 +69,7 @@ func (p *Processor) Register(msg proto.Message) uint16 {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
+// 设置消息处理的服务端
 func (p *Processor) SetRouter(msg proto.Message, msgRouter *chanrpc.Server) {
 	msgType := reflect.TypeOf(msg)
 	id, ok := p.msgID[msgType]
@@ -79,6 +81,7 @@ func (p *Processor) SetRouter(msg proto.Message, msgRouter *chanrpc.Server) {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
+// 设置消息处理方法
 func (p *Processor) SetHandler(msg proto.Message, msgHandler MsgHandler) {
 	msgType := reflect.TypeOf(msg)
 	id, ok := p.msgID[msgType]
@@ -90,6 +93,7 @@ func (p *Processor) SetHandler(msg proto.Message, msgHandler MsgHandler) {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
+// 设置消息处理方法
 func (p *Processor) SetRawHandler(id uint16, msgRawHandler MsgHandler) {
 	if id >= uint16(len(p.msgInfo)) {
 		log.Fatal("message id %v not registered", id)

@@ -1,12 +1,13 @@
 package gate
 
 import (
-	"github.com/liuzhenger/leaf/chanrpc"
-	"github.com/liuzhenger/leaf/log"
-	"github.com/liuzhenger/leaf/network"
 	"net"
 	"reflect"
 	"time"
+
+	"github.com/liuzhenger/leaf/chanrpc"
+	"github.com/liuzhenger/leaf/log"
+	"github.com/liuzhenger/leaf/network"
 )
 
 type Gate struct {
@@ -84,11 +85,15 @@ func (gate *Gate) Run(closeSig chan bool) {
 func (gate *Gate) OnDestroy() {}
 
 type agent struct {
-	conn     network.Conn
+	conn     network.Conn // tcp、websocket 链接
 	gate     *Gate
 	userData interface{}
 }
 
+// 运行在独立的协程中
+// 1.底层二进制协议解析 MsgParser
+// 2.业务层通信协议解析 network.Processor
+// 3.业务层处理消息
 func (a *agent) Run() {
 	for {
 		data, err := a.conn.ReadMsg()

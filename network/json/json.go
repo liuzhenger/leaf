@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"reflect"
+
 	"github.com/liuzhenger/leaf/chanrpc"
 	"github.com/liuzhenger/leaf/log"
-	"reflect"
 )
 
 type Processor struct {
@@ -34,6 +35,7 @@ func NewProcessor() *Processor {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
+// 注册处理的消息体类型信息
 func (p *Processor) Register(msg interface{}) string {
 	msgType := reflect.TypeOf(msg)
 	if msgType == nil || msgType.Kind() != reflect.Ptr {
@@ -54,6 +56,7 @@ func (p *Processor) Register(msg interface{}) string {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
+// 设置消息对应的服务端
 func (p *Processor) SetRouter(msg interface{}, msgRouter *chanrpc.Server) {
 	msgType := reflect.TypeOf(msg)
 	if msgType == nil || msgType.Kind() != reflect.Ptr {
@@ -69,6 +72,7 @@ func (p *Processor) SetRouter(msg interface{}, msgRouter *chanrpc.Server) {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
+// 设置消息对应的处理方法
 func (p *Processor) SetHandler(msg interface{}, msgHandler MsgHandler) {
 	msgType := reflect.TypeOf(msg)
 	if msgType == nil || msgType.Kind() != reflect.Ptr {
@@ -84,6 +88,7 @@ func (p *Processor) SetHandler(msg interface{}, msgHandler MsgHandler) {
 }
 
 // It's dangerous to call the method on routing or marshaling (unmarshaling)
+// 设置字符串对应的处理方法
 func (p *Processor) SetRawHandler(msgID string, msgRawHandler MsgHandler) {
 	i, ok := p.msgInfo[msgID]
 	if !ok {

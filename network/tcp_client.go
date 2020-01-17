@@ -1,18 +1,26 @@
 package network
 
 import (
-	"github.com/liuzhenger/leaf/log"
 	"net"
 	"sync"
 	"time"
+
+	"github.com/liuzhenger/leaf/log"
 )
+
+/*
+ TCPClient tcp客户端管理器
+ 1.建立多链接，每个链接一个协程
+ 2.支持断线重连
+ 3.关闭所有链接
+*/
 
 type TCPClient struct {
 	sync.Mutex
 	Addr            string
 	ConnNum         int
 	ConnectInterval time.Duration
-	PendingWriteNum int
+	PendingWriteNum int // TCPConn 发送队列长度
 	AutoReconnect   bool
 	NewAgent        func(*TCPConn) Agent
 	conns           ConnSet
@@ -36,6 +44,7 @@ func (client *TCPClient) Start() {
 	}
 }
 
+// 初始化参数默认值
 func (client *TCPClient) init() {
 	client.Lock()
 	defer client.Unlock()
@@ -69,6 +78,7 @@ func (client *TCPClient) init() {
 	client.msgParser = msgParser
 }
 
+// 连接服务端
 func (client *TCPClient) dial() net.Conn {
 	for {
 		conn, err := net.Dial("tcp", client.Addr)
@@ -86,6 +96,12 @@ func (client *TCPClient) connect() {
 	defer client.wg.Done()
 
 reconnect:
+	client.Lock()
+	if client.closeFlag {
+		client.Unlock()
+		return
+	}
+
 	conn := client.dial()
 	if conn == nil {
 		return

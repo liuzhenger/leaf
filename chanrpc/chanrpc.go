@@ -3,9 +3,10 @@ package chanrpc
 import (
 	"errors"
 	"fmt"
+	"runtime"
+
 	"github.com/liuzhenger/leaf/conf"
 	"github.com/liuzhenger/leaf/log"
-	"runtime"
 )
 
 // server 线程不安全

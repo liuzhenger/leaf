@@ -7,14 +7,22 @@ import (
 	"math"
 )
 
+/*
+ MsgParser 数据协议解析器
+ 按照指定的数据包规则,解析二进制数据
+ 数据格式：
+ 	data 业务数据
+ 	len 业务数据字节长度（本身是1或2或4个字节存储）
+*/
+
 // --------------
 // | len | data |
 // --------------
 type MsgParser struct {
-	lenMsgLen    int
-	minMsgLen    uint32
-	maxMsgLen    uint32
-	littleEndian bool
+	lenMsgLen    int    // data数据的字节个数用几个字节存储
+	minMsgLen    uint32 // data数据最少字节个数
+	maxMsgLen    uint32 // data数据最长字节个数
+	littleEndian bool   // 字节序列存储方式，大小端
 }
 
 func NewMsgParser() *MsgParser {
@@ -91,6 +99,7 @@ func (p *MsgParser) Read(conn *TCPConn) ([]byte, error) {
 	}
 
 	// check len
+	// 客户端发送的数据（data部分）长度要大于等于配置的最小长度（minMsgLen），小于等于配置的最大长度（maxMsgLen）
 	if msgLen > p.maxMsgLen {
 		return nil, errors.New("message too long")
 	} else if msgLen < p.minMsgLen {

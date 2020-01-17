@@ -2,13 +2,14 @@ package console
 
 import (
 	"fmt"
-	"github.com/liuzhenger/leaf/chanrpc"
-	"github.com/liuzhenger/leaf/conf"
-	"github.com/liuzhenger/leaf/log"
 	"os"
 	"path"
 	"runtime/pprof"
 	"time"
+
+	"github.com/liuzhenger/leaf/chanrpc"
+	"github.com/liuzhenger/leaf/conf"
+	"github.com/liuzhenger/leaf/log"
 )
 
 var commands = []Command{

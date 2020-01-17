@@ -7,10 +7,17 @@ import (
 	"time"
 )
 
+/*
+ TCPServer tcp链接服务端管理器
+ 1.启动一个协程，监听客户端链接
+ 2.建立链接后启动一个协程监听客户端链接句柄
+ 3.关闭所有客户端链接
+*/
+
 type TCPServer struct {
 	Addr            string
-	MaxConnNum      int
-	PendingWriteNum int
+	MaxConnNum      int // 最大同时支持的链接数量
+	PendingWriteNum int // TCPConn 发送队列长度
 	NewAgent        func(*TCPConn) Agent
 	ln              net.Listener
 	conns           ConnSet
@@ -31,6 +38,7 @@ func (server *TCPServer) Start() {
 	go server.run()
 }
 
+// 启动监听，初始化参数配置
 func (server *TCPServer) init() {
 	ln, err := net.Listen("tcp", server.Addr)
 	if err != nil {

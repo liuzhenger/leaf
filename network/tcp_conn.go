@@ -1,19 +1,28 @@
 package network
 
 import (
-	"github.com/liuzhenger/leaf/log"
 	"net"
 	"sync"
+
+	"github.com/liuzhenger/leaf/log"
 )
+
+/*
+ TCPConn tcp链接
+ 1.只关注数据的读取和发送，不关心数据格式
+ 2.数据传输格式由下层MsgParser负责
+ 3.会启动一个发送消息的协程
+ 4.所有公共方法都并发安全
+*/
 
 type ConnSet map[net.Conn]struct{}
 
 type TCPConn struct {
 	sync.Mutex
-	conn      net.Conn
-	writeChan chan []byte
+	conn      net.Conn    // 并发安全
+	writeChan chan []byte // 消息缓冲队列
 	closeFlag bool
-	msgParser *MsgParser
+	msgParser *MsgParser // 数据传输协议解析器
 }
 
 func newTCPConn(conn net.Conn, pendingWriteNum int, msgParser *MsgParser) *TCPConn {
@@ -53,6 +62,9 @@ func (tcpConn *TCPConn) doDestroy() {
 	}
 }
 
+// 主动关闭连接
+// 立即停止消息队列中的数据发送
+// 立即停止消息发送
 func (tcpConn *TCPConn) Destroy() {
 	tcpConn.Lock()
 	defer tcpConn.Unlock()
@@ -60,6 +72,9 @@ func (tcpConn *TCPConn) Destroy() {
 	tcpConn.doDestroy()
 }
 
+// 主动关闭连接
+// 立即停止消息发送
+// 发送队列中的未发送的数据会继续发送，直到队列为空，然后连接关闭，发送协程结束
 func (tcpConn *TCPConn) Close() {
 	tcpConn.Lock()
 	defer tcpConn.Unlock()
