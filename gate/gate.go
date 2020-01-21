@@ -5,9 +5,9 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/liuzhenger/leaf/chanrpc"
-	"github.com/liuzhenger/leaf/log"
-	"github.com/liuzhenger/leaf/network"
+	"github.com/skeletongo/leaf/chanrpc"
+	"github.com/skeletongo/leaf/log"
+	"github.com/skeletongo/leaf/network"
 )
 
 type Gate struct {

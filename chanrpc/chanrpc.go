@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/liuzhenger/leaf/conf"
-	"github.com/liuzhenger/leaf/log"
+	"github.com/skeletongo/leaf/conf"
+	"github.com/skeletongo/leaf/log"
 )
 
 // server 线程不安全

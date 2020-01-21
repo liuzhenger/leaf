@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/liuzhenger/leaf/log"
+	"github.com/skeletongo/leaf/log"
 )
 
 /*

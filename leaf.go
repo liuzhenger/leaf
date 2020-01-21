@@ -1,11 +1,11 @@
 package leaf
 
 import (
-	"github.com/liuzhenger/leaf/cluster"
-	"github.com/liuzhenger/leaf/conf"
-	"github.com/liuzhenger/leaf/console"
-	"github.com/liuzhenger/leaf/log"
-	"github.com/liuzhenger/leaf/module"
+	"github.com/skeletongo/leaf/cluster"
+	"github.com/skeletongo/leaf/conf"
+	"github.com/skeletongo/leaf/console"
+	"github.com/skeletongo/leaf/log"
+	"github.com/skeletongo/leaf/module"
 	"os"
 	"os/signal"
 )

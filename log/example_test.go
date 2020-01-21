@@ -1,7 +1,7 @@
 package log_test
 
 import (
-	"github.com/liuzhenger/leaf/log"
+	"github.com/skeletongo/leaf/log"
 	l "log"
 )
 

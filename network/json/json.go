@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/liuzhenger/leaf/chanrpc"
-	"github.com/liuzhenger/leaf/log"
+	"github.com/skeletongo/leaf/chanrpc"
+	"github.com/skeletongo/leaf/log"
 )
 
 type Processor struct {

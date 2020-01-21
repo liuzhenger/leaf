@@ -4,8 +4,8 @@ import (
 	"math"
 	"time"
 
-	"github.com/liuzhenger/leaf/conf"
-	"github.com/liuzhenger/leaf/network"
+	"github.com/skeletongo/leaf/conf"
+	"github.com/skeletongo/leaf/network"
 )
 
 var (

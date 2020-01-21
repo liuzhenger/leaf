@@ -2,7 +2,7 @@ package timer_test
 
 import (
 	"fmt"
-	"github.com/liuzhenger/leaf/timer"
+	"github.com/skeletongo/leaf/timer"
 	"time"
 )
 

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang/protobuf/proto"
-	"github.com/liuzhenger/leaf/chanrpc"
-	"github.com/liuzhenger/leaf/log"
+	"github.com/skeletongo/leaf/chanrpc"
+	"github.com/skeletongo/leaf/log"
 	"math"
 	"reflect"
 )

@@ -1,8 +1,8 @@
 package timer
 
 import (
-	"github.com/liuzhenger/leaf/conf"
-	"github.com/liuzhenger/leaf/log"
+	"github.com/skeletongo/leaf/conf"
+	"github.com/skeletongo/leaf/log"
 	"runtime"
 	"time"
 )

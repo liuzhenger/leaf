@@ -2,7 +2,7 @@ package util_test
 
 import (
 	"fmt"
-	"github.com/liuzhenger/leaf/util"
+	"github.com/skeletongo/leaf/util"
 )
 
 func ExampleMap() {

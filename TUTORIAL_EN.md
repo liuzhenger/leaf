@@ -106,7 +106,7 @@ Firstly we define a JSON-encoded message(likely the protobuf). Open LeafServer m
 package msg
 
 import (
-    "github.com/liuzhenger/leaf/network"
+    "github.com/skeletongo/leaf/network"
 )
 
 var Processor network.Processor
@@ -122,7 +122,7 @@ Processor is the message handler. Here we use the handler of JSON, the default m
 package msg
 
 import (
-    "github.com/liuzhenger/leaf/network/json"
+    "github.com/skeletongo/leaf/network/json"
 )
 
 // Create a JSON Processor（or protobuf if you like）
@@ -163,8 +163,8 @@ It is ready to handle `Hello` message in `game` module. Open LeafServer game/int
 package internal
 
 import (
-    "github.com/liuzhenger/leaf/log"
-    "github.com/liuzhenger/leaf/gate"
+    "github.com/skeletongo/leaf/log"
+    "github.com/skeletongo/leaf/gate"
     "reflect"
     "server/msg"
 )
@@ -324,7 +324,7 @@ Enter into game module's internal（LeafServer game/internal/module.go）：
 package internal
 
 import (
-    "github.com/liuzhenger/leaf/module"
+    "github.com/skeletongo/leaf/module"
     "server/base"
 )
 
@@ -360,7 +360,7 @@ Since in Leaf, every module runs in a separate goroutine, a RPC channel is neede
 package internal
 
 import (
-    "github.com/liuzhenger/leaf/gate"
+    "github.com/skeletongo/leaf/gate"
 )
 
 func init() {

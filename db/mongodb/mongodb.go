@@ -2,7 +2,7 @@ package mongodb
 
 import (
 	"container/heap"
-	"github.com/liuzhenger/leaf/log"
+	"github.com/skeletongo/leaf/log"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"sync"

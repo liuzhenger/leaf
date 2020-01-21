@@ -1,10 +1,10 @@
 package module
 
 import (
-	"github.com/liuzhenger/leaf/chanrpc"
-	"github.com/liuzhenger/leaf/console"
-	"github.com/liuzhenger/leaf/go"
-	"github.com/liuzhenger/leaf/timer"
+	"github.com/skeletongo/leaf/chanrpc"
+	"github.com/skeletongo/leaf/console"
+	"github.com/skeletongo/leaf/go"
+	"github.com/skeletongo/leaf/timer"
 	"time"
 )
 

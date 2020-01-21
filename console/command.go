@@ -7,9 +7,9 @@ import (
 	"runtime/pprof"
 	"time"
 
-	"github.com/liuzhenger/leaf/chanrpc"
-	"github.com/liuzhenger/leaf/conf"
-	"github.com/liuzhenger/leaf/log"
+	"github.com/skeletongo/leaf/chanrpc"
+	"github.com/skeletongo/leaf/conf"
+	"github.com/skeletongo/leaf/log"
 )
 
 var commands = []Command{
