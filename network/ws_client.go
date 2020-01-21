@@ -87,18 +87,19 @@ func (client *WSClient) connect() {
 	defer client.wg.Done()
 
 reconnect:
+	client.Lock()
+	if client.closeFlag {
+		client.Unlock()
+		return
+	}
+
 	conn := client.dial()
 	if conn == nil {
+		client.Unlock()
 		return
 	}
 	conn.SetReadLimit(int64(client.MaxMsgLen))
 
-	client.Lock()
-	if client.closeFlag {
-		client.Unlock()
-		conn.Close()
-		return
-	}
 	client.conns[conn] = struct{}{}
 	client.Unlock()
 

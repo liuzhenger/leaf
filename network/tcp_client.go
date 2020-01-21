@@ -104,6 +104,7 @@ reconnect:
 
 	conn := client.dial()
 	if conn == nil {
+		client.Unlock()
 		return
 	}
 
